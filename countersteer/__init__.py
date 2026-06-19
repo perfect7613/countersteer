@@ -15,4 +15,3 @@ __all__ = [
     "canonical_config_hash",
     "estimate_resource_cost_usd",
 ]
-
