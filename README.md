@@ -36,3 +36,16 @@ The remote result and provenance manifest are stored in the persistent
 `countersteer-data` Volume under `/countersteer/results/smoke/`. The manifest
 records the model revision, seed, hardware, timing, configuration hash, and a
 transparent pre-credit resource-cost estimate.
+
+## Frozen English baseline
+
+The versioned English corpus contains 60 source items rendered into 180 matched
+prompts. Run the resumable forced-choice baseline with:
+
+```bash
+uv run modal run modal_baseline.py
+```
+
+Per-prompt artifacts, the aggregate report, and its manifest are stored under
+`/countersteer/results/english-baseline/<configuration-hash>/` in the same
+persistent Modal Volume.
