@@ -19,3 +19,20 @@ Planning and repository setup for the Apart Global South AI Safety Hackathon 202
 ## Security
 
 Local service credentials belong in `.env`, which is ignored by Git. Use `.env.example` as the variable-name template.
+
+## Modal smoke experiment
+
+The first reproducible path pins Gemma 4 to revision
+`fee6332c1abaafb77f6f9624236c63aa2f1d0187`. Model weights and inference remain
+on Modal; the local command only submits a request and prints the summary.
+
+```bash
+uv sync
+uv run modal secret create countersteer-huggingface HF_TOKEN="$HF_TOKEN"
+uv run modal run modal_app.py
+```
+
+The remote result and provenance manifest are stored in the persistent
+`countersteer-data` Volume under `/countersteer/results/smoke/`. The manifest
+records the model revision, seed, hardware, timing, configuration hash, and a
+transparent pre-credit resource-cost estimate.
