@@ -78,4 +78,3 @@ def test_source_json_is_canonical_data_not_generated_at_test_time() -> None:
     payload = bundle.remote_payload()
 
     assert json.loads(json.dumps(payload)) == payload
-
