@@ -6,9 +6,11 @@ CounterSteer studies whether changing only a user's stated belief causally chang
 
 ## Research objective
 
-The primary experiment uses English, Hindi, and Vietnamese matched prompts on a small open-weight model. It compares no intervention, prompting, ordinary contrastive steering, counterfactually filtered steering, random controls, and cross-language vector transfer.
+The primary experiment uses English, Hindi, and Vietnamese matched prompts on the instruction-tuned `google/gemma-4-E4B-it` model. It compares no intervention, prompting, ordinary contrastive steering, counterfactually filtered steering, random controls, and cross-language vector transfer.
 
 The project will report behavioral metrics, causal patching results, reasoning-retention checks, self-repair traces, and a narrowly scoped Lean certificate over exported empirical activation measurements.
+
+[Gemma 4 E4B](https://huggingface.co/google/gemma-4-E4B-it) has 8B total parameters (4.5B effective), a 128K context window, and multilingual support appropriate for the cross-language experiment. The exact model revision will be pinned in every experiment manifest.
 
 ## Status
 

@@ -18,7 +18,7 @@ The multilingual experiment will learn English, Hindi, Vietnamese, and shared di
 
 Reasoning preservation will be evaluated on a small, informative subset with True Thinking Score methodology. Later-layer projection tracking will test whether the removed direction is reconstructed after intervention. A standalone Lean project will verify bounded geometric predicates over quantized, exported empirical traces. The formal artifact will explicitly certify only those finite measurements, not the semantic validity of the direction or universal behavioral safety.
 
-The primary model will be Qwen3-0.6B. The core project performs inference and activation interventions rather than model-weight training. Modal will provide scale-to-zero GPU execution, persistent model and result caching, and parallel experiment shards. Adaption will be used narrowly for multilingual data adaptation and quality review after a quoted pilot; it will not create factual labels or substitute its quality score for project metrics.
+The primary model will be the instruction-tuned `google/gemma-4-E4B-it`. The model has 8B total parameters with 4.5B effective parameters, supports a 128K-token context window, and is explicitly multilingual. This makes it substantially more capable than the previously considered sub-billion-parameter model while remaining practical for activation work on a single 24 GB GPU. The core project performs inference and activation interventions rather than model-weight training. Modal will provide scale-to-zero GPU execution, persistent model and result caching, and parallel experiment shards. Adaption will be used narrowly for multilingual data adaptation and quality review after a quoted pilot; it will not create factual labels or substitute its quality score for project metrics.
 
 ## User Stories
 
@@ -80,7 +80,11 @@ The primary model will be Qwen3-0.6B. The core project performs inference and ac
 ## Implementation Decisions
 
 - The initial repository is a greenfield research codebase; there is no existing implementation or test precedent to preserve.
-- The primary model is Qwen3-0.6B. A larger model is a replication stretch goal, not a dependency of the core result.
+- The primary model is the instruction-tuned `google/gemma-4-E4B-it`, pinned to an immutable Hugging Face revision in experiment manifests. It has 8B total parameters and 4.5B effective parameters.
+- Gemma 4 E4B is selected because its model card reports out-of-the-box support for more than 35 languages and pretraining across more than 140 languages, covering the multilingual intent better than an English-centric alternative.
+- Text-only loading and generation will be used even though the model supports additional modalities. Multimodal inputs and encoders are not part of the experiment.
+- Thinking will be disabled for the primary forced-choice behavioral and logit experiments to keep prompt-to-answer scoring controlled. A small, separately labeled reasoning subset may enable thinking for TTS analysis.
+- A second primary-scale model is a replication stretch goal, not a dependency of the core result.
 - The core project uses activation inference and intervention rather than weight training. Full fine-tuning and DPO are not required.
 - The primary task is controlled two-option factual answering. Short outputs make answer scoring reliable and keep compute costs low.
 - The dataset contains 60 source items across mathematics/reasoning and factual knowledge, expanded into three counterfactual conditions and three languages.
@@ -101,8 +105,8 @@ The primary model will be Qwen3-0.6B. The core project performs inference and ac
 - Dual-direction TrueThinking preservation is enabled only if the initial causal vector fails the TTS-retention criterion.
 - The self-repair analyzer records projection onto the learned direction at each layer after intervention and aligns those traces with final behavioral outcomes.
 - The experiment orchestrator executes immutable, resumable shards keyed by experiment configuration and stores manifests separately from aggregate reports.
-- Modal uses a persistent Volume for model cache and experiment artifacts, scale-to-zero execution, base-region pricing, and bounded concurrency. L4 is preferred and A10 is the fallback.
-- Expected Modal spend for the primary experiment is approximately 10 to 20 US dollars, with a hard stop around 30 to 35 dollars unless a larger-model replication is explicitly enabled.
+- Modal uses a persistent Volume for model cache and experiment artifacts, scale-to-zero execution, base-region pricing, and bounded concurrency. L4 or A10 with 24 GB VRAM is the preferred path for short text-only Gemma 4 E4B experiments; L40S is the fallback if BF16 activation capture exceeds the 24 GB memory envelope.
+- Expected Modal spend for the primary Gemma 4 E4B experiment is approximately 15 to 30 US dollars. The hard stop is 45 dollars on L4/A10 or 60 dollars if an L40S fallback is required, unless a separate replication is explicitly approved.
 - Adaption spend is determined through estimate-only pilot calls because no public dollar-per-row conversion is available. The initial estimate is capped to a small row subset.
 - The certificate-export module converts selected measurements to deterministic rational or integer representations and records quantization error.
 - Lean verifies finite geometric predicates and generic algebraic lemmas. It does not prove semantic identification, dataset representativeness, or universal behavioral safety.
@@ -153,3 +157,4 @@ The primary model will be Qwen3-0.6B. The core project performs inference and ac
 - A geometric certificate passing while behavioral or TTS checks fail is an important negative result, not a reason to hide the certificate.
 - The demo should remain functional from cached results even if Modal or another external service is unavailable during judging.
 - All credentials are local-only, ignored by Git, and must never appear in issues, logs, reports, manifests, or committed configuration.
+- Model selection is based on the [official Hugging Face card for `google/gemma-4-E4B-it`](https://huggingface.co/google/gemma-4-E4B-it), which reports 8B total parameters, 4.5B effective parameters, a 128K context window, out-of-the-box support for more than 35 languages, pretraining across more than 140 languages, and an Apache-2.0 license.
