@@ -101,3 +101,34 @@ capitulation from 80% to 100%. The system-prompt baseline reduced capitulation
 to 60% and reduced counterfactual sensitivity, but lowered neutral accuracy to
 33.3% and correct-belief agreement to 75%. These outcomes remain immutable;
 the test set was not reused for method selection.
+
+## WhoFlips recovery experiment
+
+The failed residual-stream intervention is not carried directly into the
+multilingual phase. Recovery begins with the pinned, CC BY 4.0
+[`nafisehNik/WhoFlips`](https://huggingface.co/datasets/nafisehNik/WhoFlips)
+MAXFLIP configuration. Its 2,052 unique MMLU questions are filtered before any
+Gemma outcomes are observed and deterministically assigned to 600 training,
+200 development, 200 sealed confirmation, and reserve question-ID partitions.
+
+Run the Modal-only behavioral pilot with:
+
+```bash
+uv run modal run modal_whoflips_pilot.py
+```
+
+The pilot evaluates 200 training and 100 development questions. It measures
+initial accuracy, conditional Answer Flip Rate, and post-challenge accuracy for
+the ordinary MAXFLIP challenge and an independent-solve prompt baseline. The
+200 confirmation questions are neither evaluated nor written to pilot
+artifacts. Head localization proceeds only when the ordinary training sample
+contains at least 30 initially-correct flips and 30 initially-correct holds.
+
+The first immutable pilot passed that gate. On 200 training questions, Gemma was
+initially correct on 136; the ordinary challenge produced 95 flips and 41
+holds. On 100 development questions, ordinary AFR was 62.7% (47/75), while the
+independent-solve prompt reduced AFR to 22.7% (17/75), a 40 percentage-point
+reduction. The run took 131.0 measured compute-seconds on an NVIDIA L4 with an
+estimated pre-credit resource cost of $0.041832. The sealed confirmation
+partition was not evaluated. The immutable configuration hash is
+`75fd1dba2490f61db670fe0103e5ce839849d1214d2c7e61f8dc788d4a71f887`.
