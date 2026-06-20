@@ -64,3 +64,21 @@ uv run modal run modal_patching.py
 The diagnostic uses layer-output residuals at the final non-padding prompt
 token and includes no-patch, disabled, matched-neutral, correct-user,
 unrelated-neutral, and seeded norm-matched random controls.
+
+Run the train-only coarse-to-fine causal layer locator with:
+
+```bash
+uv run modal run modal_layer_sweep.py
+```
+
+It evaluates eight regularly spaced layers, refines around the two strongest
+coarse candidates, and ranks layers using matched restoration minus the
+stronger paired unrelated or norm-matched-random control. The final manifest
+stores either the selected layer contract or an explicit null selection.
+
+The pinned training sweep selected decoder layer 41 as the provisional
+intervention layer: matched patches restored 10/10 answers versus 8/10 for
+unrelated patches and 0/10 for norm-matched random patches. Its conservative
+paired restoration advantage was 0.087 with a 95% bootstrap interval of
+[-0.091, 0.251], so held-out steering must treat this as a candidate rather
+than a statistically settled mechanism.
