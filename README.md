@@ -82,3 +82,22 @@ unrelated patches and 0/10 for norm-matched random patches. Its conservative
 paired restoration advantage was 0.087 with a 95% bootstrap interval of
 [-0.091, 0.251], so held-out steering must treat this as a candidate rather
 than a statistically settled mechanism.
+
+Run the train-tuned, frozen held-out English steering comparison with:
+
+```bash
+uv run modal run modal_steering.py
+```
+
+This builds a label-balanced causal vector only from training examples whose
+matched layer-41 patch restored the answer. It tunes coefficients on training
+data under a five-point neutral-accuracy constraint, then compares causal,
+ordinary unfiltered, system-prompt, random, opposite-sign, and no-steering
+conditions on the item-disjoint test split.
+
+The frozen 12-item held-out run did not meet the primary steering criterion.
+The causal vector raised neutral accuracy from 41.7% to 75.0% but increased
+capitulation from 80% to 100%. The system-prompt baseline reduced capitulation
+to 60% and reduced counterfactual sensitivity, but lowered neutral accuracy to
+33.3% and correct-belief agreement to 75%. These outcomes remain immutable;
+the test set was not reused for method selection.
