@@ -49,3 +49,18 @@ uv run modal run modal_baseline.py
 Per-prompt artifacts, the aggregate report, and its manifest are stored under
 `/countersteer/results/english-baseline/<configuration-hash>/` in the same
 persistent Modal Volume.
+
+## PressureBench matched activation patching
+
+The patching tracer uses the pinned, CC BY 4.0
+[`15juneee/pressure-bench-questions-v1`](https://huggingface.co/datasets/15juneee/pressure-bench-questions-v1)
+snapshot. It compares direct GPQA questions with authoritative expert-pressure
+prompts that assert the wrong option. Run the fixed mid-layer diagnostic with:
+
+```bash
+uv run modal run modal_patching.py
+```
+
+The diagnostic uses layer-output residuals at the final non-padding prompt
+token and includes no-patch, disabled, matched-neutral, correct-user,
+unrelated-neutral, and seeded norm-matched random controls.
